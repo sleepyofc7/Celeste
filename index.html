@@ -8,6 +8,10 @@
     <title>Abrindo Celeste...</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
             display: flex;
@@ -15,55 +19,85 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            box-sizing: border-box;
             margin: 0;
-            padding: 20px;
+            padding: 24px;
             background-color: #121214;
             color: #ffffff;
             text-align: center;
         }
 
-        .btn {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 15px 30px;
-            font-size: 18px;
-            font-weight: bold;
-            color: #fff;
-            background-color: #ff4757;
-            border: none;
-            border-radius: 8px;
-            text-decoration: none;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        }
-
-        .btn:hover {
-            background-color: #ff6b81;
+        h1 {
+            font-size: 28px;
+            margin-bottom: 12px;
         }
 
         p {
             color: #b8b8bd;
-            line-height: 1.5;
+            font-size: 15px;
+            line-height: 1.6;
+            max-width: 360px;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 16px 30px;
+            font-size: 17px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #ff4757;
+            border: none;
+            border-radius: 10px;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255, 71, 87, 0.25);
+            transition: background-color 0.2s, transform 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #ff6b81;
+            transform: scale(1.03);
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        #status {
+            margin-top: 20px;
+            font-size: 13px;
+            color: #9999a3;
         }
     </style>
 </head>
 
 <body>
 
-    <h1>Abrindo o Celeste Android...</h1>
+    <h1>🎮 Celeste Android</h1>
 
-    <p id="status">
-        Toque no botão abaixo se o jogo não abrir automaticamente.
+    <p>
+        Inicie o jogo diretamente pelo seu celular.
+        Se ele não abrir automaticamente, toque no botão abaixo.
     </p>
 
     <a id="appLink" class="btn"
-       href="intent:#Intent;package=org.celesteandroid.celeste;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;end">
-        Abrir Jogo Agora
+       href="intent://launch#Intent;scheme=celeste;package=org.celesteandroid.celeste;component=org.celesteandroid.celeste/.LauncherActivity;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;end">
+        Abrir Celeste
     </a>
+
+    <p id="status">Preparando para abrir o jogo...</p>
 
     <script>
         const pacote = "org.celesteandroid.celeste";
+
+        const intent =
+            "intent://launch#Intent;" +
+            "scheme=celeste;" +
+            "package=" + pacote + ";" +
+            "component=" + pacote + "/.LauncherActivity;" +
+            "action=android.intent.action.MAIN;" +
+            "category=android.intent.category.LAUNCHER;" +
+            "end";
 
         let tentativaRealizada = false;
 
@@ -73,16 +107,15 @@
             tentativaRealizada = true;
 
             document.getElementById("status").textContent =
-                "Tentando abrir o jogo...";
-
-            const intent =
-                "intent:#Intent;" +
-                "action=android.intent.action.MAIN;" +
-                "category=android.intent.category.LAUNCHER;" +
-                "package=" + pacote + ";" +
-                "end";
+                "Tentando iniciar o Celeste Android...";
 
             window.location.href = intent;
+
+            setTimeout(function() {
+                document.getElementById("status").textContent =
+                    "Se o jogo não abriu, toque no botão novamente.";
+                tentativaRealizada = false;
+            }, 2000);
         }
 
         document.getElementById("appLink").addEventListener("click", function(e) {
@@ -90,10 +123,8 @@
             tentarAbrir();
         });
 
-        // Tentativa automática ao carregar a página.
-        // Alguns navegadores bloqueiam a abertura automática.
         window.addEventListener("load", function() {
-            setTimeout(tentarAbrir, 300);
+            setTimeout(tentarAbrir, 800);
         });
     </script>
 
