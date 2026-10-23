@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abrindo Aplicativo...</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+            color: #333;
+            text-align: center;
+        }
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 25px;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Tentando abrir o aplicativo...</h1>
+    <p>Se o aplicativo não abrir automaticamente em instantes, clique no botão abaixo.</p>
+    
+    <!-- Link com o Intent para abrir o pacote específico -->
+    <a id="appLink" href="intent://#Intent;package=org.celesteandroid.celeste;end" class="btn">Abrir Aplicativo Manualmente</a>
+
+    <script>
+        window.onload = function() {
+            var appIntentUrl = "intent://#Intent;package=org.celesteandroid.celeste;end";
+            
+            // Tenta o redirecionamento automático assim que a página carrega
+            window.location.href = appIntentUrl;
+            
+            // Backup caso o window.location falhe (comportamento comum em alguns navegadores)
+            setTimeout(function() {
+                var link = document.getElementById('appLink');
+                if (link) {
+                    link.click();
+                }
+            }, 500);
+        };
+    </script>
+
+</body>
+</html>
