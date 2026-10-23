@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#121214">
+
     <title>Abrindo Celeste...</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -11,13 +14,15 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
+            box-sizing: border-box;
             margin: 0;
+            padding: 20px;
             background-color: #121214;
             color: #ffffff;
             text-align: center;
-            padding: 20px;
         }
+
         .btn {
             display: inline-block;
             margin-top: 20px;
@@ -30,42 +35,66 @@
             border-radius: 8px;
             text-decoration: none;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         }
+
         .btn:hover {
             background-color: #ff6b81;
         }
+
+        p {
+            color: #b8b8bd;
+            line-height: 1.5;
+        }
     </style>
 </head>
+
 <body>
 
     <h1>Abrindo o Celeste Android...</h1>
-    <p>Se o jogo não abrir, use o botão abaixo para forçar o início:</p>
-    
-    <!-- Forçando um esquema direto de URI sem a rota padrão da Google Play -->
-    <a id="appLink" href="org.celesteandroid.celeste://start" class="btn">Abrir Jogo Agora</a>
+
+    <p id="status">
+        Toque no botão abaixo se o jogo não abrir automaticamente.
+    </p>
+
+    <a id="appLink" class="btn"
+       href="intent:#Intent;package=org.celesteandroid.celeste;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;end">
+        Abrir Jogo Agora
+    </a>
 
     <script>
+        const pacote = "org.celesteandroid.celeste";
+
+        let tentativaRealizada = false;
+
         function tentarAbrir() {
-            // Tenta abrir usando o esquema direto do pacote
-            window.location.href = "org.celesteandroid.celeste://start";
-            
-            // Se falhar e o Chrome travar, tenta o formato de intent modificado sem pacote de fallback
-            setTimeout(function() {
-                window.location.href = "intent://start#Intent;scheme=org.celesteandroid.celeste;package=org.celesteandroid.celeste;S.browser_fallback_url=javascript:void(0);end";
-            }, 500);
+            if (tentativaRealizada) return;
+
+            tentativaRealizada = true;
+
+            document.getElementById("status").textContent =
+                "Tentando abrir o jogo...";
+
+            const intent =
+                "intent:#Intent;" +
+                "action=android.intent.action.MAIN;" +
+                "category=android.intent.category.LAUNCHER;" +
+                "package=" + pacote + ";" +
+                "end";
+
+            window.location.href = intent;
         }
 
-        window.onload = function() {
-            // Executa a tentativa automática ao carregar
+        document.getElementById("appLink").addEventListener("click", function(e) {
+            e.preventDefault();
             tentarAbrir();
-            
-            // Vincula a mesma função segura ao clique do botão
-            document.getElementById('appLink').addEventListener('click', function(e) {
-                e.preventDefault();
-                tentarAbrir();
-            });
-        };
+        });
+
+        // Tentativa automática ao carregar a página.
+        // Alguns navegadores bloqueiam a abertura automática.
+        window.addEventListener("load", function() {
+            setTimeout(tentarAbrir, 300);
+        });
     </script>
 
 </body>
