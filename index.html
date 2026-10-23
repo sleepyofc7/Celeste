@@ -16,6 +16,7 @@
             background-color: #121214;
             color: #ffffff;
             text-align: center;
+            padding: 20px;
         }
         .btn {
             display: inline-block;
@@ -24,7 +25,7 @@
             font-size: 18px;
             font-weight: bold;
             color: #fff;
-            background-color: #5865F2;
+            background-color: #ff4757;
             border: none;
             border-radius: 8px;
             text-decoration: none;
@@ -32,33 +33,38 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
         .btn:hover {
-            background-color: #4752C4;
+            background-color: #ff6b81;
         }
     </style>
 </head>
 <body>
 
     <h1>Abrindo o Celeste Android...</h1>
-    <p>Se o jogo não abrir sozinho, clique no botão abaixo:</p>
+    <p>Se o jogo não abrir, use o botão abaixo para forçar o início:</p>
     
-    <!-- Modificado: Adicionado S.browser_fallback_url=inline para evitar a Play Store -->
-    <a id="appLink" href="intent://#Intent;package=org.celesteandroid.celeste;S.browser_fallback_url=inline;end" class="btn">Abrir Jogo</a>
+    <!-- Forçando um esquema direto de URI sem a rota padrão da Google Play -->
+    <a id="appLink" href="org.celesteandroid.celeste://start" class="btn">Abrir Jogo Agora</a>
 
     <script>
-        window.onload = function() {
-            // Sintaxe que diz ao Chrome: "Se falhar, fique na mesma página e não vá para a Play Store"
-            var appIntentUrl = "intent://#Intent;package=org.celesteandroid.celeste;S.browser_fallback_url=inline;end";
+        function tentarAbrir() {
+            // Tenta abrir usando o esquema direto do pacote
+            window.location.href = "org.celesteandroid.celeste://start";
             
-            // Tenta abrir direto
-            window.location.href = appIntentUrl;
-            
-            // Segunda tentativa automática caso a primeira seja bloqueada
+            // Se falhar e o Chrome travar, tenta o formato de intent modificado sem pacote de fallback
             setTimeout(function() {
-                var link = document.getElementById('appLink');
-                if (link) {
-                    link.click();
-                }
-            }, 300);
+                window.location.href = "intent://start#Intent;scheme=org.celesteandroid.celeste;package=org.celesteandroid.celeste;S.browser_fallback_url=javascript:void(0);end";
+            }, 500);
+        }
+
+        window.onload = function() {
+            // Executa a tentativa automática ao carregar
+            tentarAbrir();
+            
+            // Vincula a mesma função segura ao clique do botão
+            document.getElementById('appLink').addEventListener('click', function(e) {
+                e.preventDefault();
+                tentarAbrir();
+            });
         };
     </script>
 
